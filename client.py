@@ -33,13 +33,13 @@ class TCP_Client():
             self.networkStream = NetworkStream(self.sock)
             self.networkStream.send_msg("Hello!")
             logging.debug("Sent: Hello!")
+            thread = Thread(target=self._loop_client)
+            thread.start()
         except Exception as e:
-            logging.debug(e)
+            logging.debug("Exception: " + str(e))
             self.sock.close()
             logging.debug("Connection closed")
-
-        thread = Thread(target=self._loop_client)
-        thread.start()
+            raise e
 
     def _loop_client(self):
         self.client_is_running = True

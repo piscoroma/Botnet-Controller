@@ -1,5 +1,6 @@
 import socket
 import logging
+import time
 from threading import Thread
 import threading
 from client_handler import ClientHandler
@@ -78,9 +79,10 @@ class TCP_Server():
             new_clients = []
             for client in self.clients:
                 client.send_command("hello")
+            time.sleep(1)
             for client in self.clients:
                 if client.is_to_remove():
-                    logging.debug("Client " + str(client.address) + " has to be removed")
+                    logging.debug("Client " + str(client.client_endpoint) + " has to be removed")
                     clients_to_remove = clients_to_remove + 1
                     client.stop()
                 else:

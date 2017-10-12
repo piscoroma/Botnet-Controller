@@ -8,7 +8,7 @@ from client_handler import ClientHandler
 class TCP_Server():
 
     def __init__(self, port):
-        self.address = "localhost"
+        self.address = "0.0.0.0"
         self.port = port
         self.sock = None
         self.server_is_running = None

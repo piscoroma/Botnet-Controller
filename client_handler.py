@@ -35,6 +35,7 @@ class ClientHandler():
                         logging.debug(e)
                 else:
                     try:
+                        logging.debug("Sending to " + self.client_endpoint + ": " + self.cmd)
                         self.networkStream.send_msg(self.cmd)
                         data = self.networkStream.recv_msg()
                         # Save the output of the client in a file

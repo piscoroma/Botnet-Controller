@@ -63,15 +63,19 @@ class TCP_Client():
                         print(output)
                         while not os.path.isfile(file_ack):
                             time.sleep(5)
+                        print("Command executed")
                         try:
                             with open(file_log, 'r') as file:
-                                lines = file.readlines()
-                                #print(lines)
-                                self.networkStream.send_msg(lines)
+                                data = file.read()
+                                file.close()
+                                self.networkStream.send_msg(data)
                         except IOError as e:
                             error = "Error during the reading of the file: " + file_log + "\nException: " + str(e)
-                            #print(error)
+                            print(error)
                             self.networkStream.send_msg(error)
+                        finally:
+                            os.remove(file_log)
+                            os.remove(file_ack)
                     else:
                         print("Execute command: " + cmd)
                         bash = Bash(cmd)

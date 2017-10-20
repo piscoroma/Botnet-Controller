@@ -54,7 +54,8 @@ if __name__ == "__main__":
                 elif cmd == 4:
                     now = datetime.datetime.now().strftime("%d/%m/%y %H:%M:%S")
                     print(now)
-                    cmd = input("Command: [@hh:mm]")
+                    print("<command> [@hh:mm]")
+                    cmd = input("#: ")
                     server.show_clients()
                     print("Write client endpoint to send command, or write all to send to all ")
                     client_endpoint = input("[ip:port] or [all]: ")

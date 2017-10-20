@@ -50,15 +50,19 @@ class TCP_Client():
                 print("[FROM " + self.server_endpoint + "]: " + msg)
                 if '#' in msg:
                     cmd = msg.split('#')[1]
+                    print("Received command: " + cmd)
                     if '@' in cmd:
                         values = cmd.split('@')
                         cmd = values[0]
                         time = str(values[1])
                         file_log = "cmd_log"
                         file_ack = "ack"
-                        cmd_new = cmd + " > " + file_log + " && touch " + file_ack + " | at " + time
-                        print("Execute command: " + cmd_new)
-                        bash = Bash(cmd_new)
+                        file_commands = "commands"
+                        cmd_new = cmd + " > " + file_log + " && touch " + file_ack
+                        Bash(cmd_new + " > " + file_commands)
+                        output = bash.get_output()
+                        print(output)
+                        Bash("at " + time + "-f " + file_commands)
                         output = bash.get_output()
                         print(output)
                         while not os.path.isfile(file_ack):
@@ -76,6 +80,7 @@ class TCP_Client():
                         finally:
                             os.remove(file_log)
                             os.remove(file_ack)
+                            os.remove(file_commands)
                     else:
                         print("Execute command: " + cmd)
                         bash = Bash(cmd)

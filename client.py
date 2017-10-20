@@ -4,7 +4,8 @@ from threading import Thread
 from utils import Bash
 import socket
 import logging
-import subprocess
+import time
+import os.path
 
 # set log level
 log_format = '%(asctime)s %(threadName)s %(filename)s:%(lineno)s %(message)s'
@@ -49,11 +50,34 @@ class TCP_Client():
                 print("[FROM " + self.server_endpoint + "]: " + msg)
                 if '#' in msg:
                     cmd = msg.split('#')[1]
-                    print("Execute command: " + cmd)
-                    bash = Bash(cmd)
-                    output = bash.get_output()
-                    print(output)
-                    self.networkStream.send_msg(output)
+                    if '@' in cmd:
+                        values = cmd.split('@')
+                        cmd = values[0]
+                        time = str(values[1])
+                        file_log = "cmd_log"
+                        file_ack = "ack"
+                        cmd_new = cmd + " > " + file_log + " && touch " + file_ack + " | at " + time
+                        print("Execute command: " + cmd_new)
+                        bash = Bash(cmd_new)
+                        output = bash.get_output()
+                        print(output)
+                        while not os.path.isfile(file_ack):
+                            time.sleep(5)
+                        try:
+                            with open(file_log, 'r') as file:
+                                lines = file.readlines()
+                                #print(lines)
+                                self.networkStream.send_msg(lines)
+                        except IOError as e:
+                            error = "Error during the reading of the file: " + file_log + "\nException: " + str(e)
+                            #print(error)
+                            self.networkStream.send_msg(error)
+                    else:
+                        print("Execute command: " + cmd)
+                        bash = Bash(cmd)
+                        output = bash.get_output()
+                        print(output)
+                        self.networkStream.send_msg(output)
                     print("Output sent back to the server")
         except Exception as e:
             if self.client_is_running:

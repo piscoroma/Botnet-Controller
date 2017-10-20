@@ -1,6 +1,7 @@
 from server import TCP_Server
 import sys
 import logging
+import datetime
 
 # set log level
 log_format = '%(asctime)s %(threadName)s %(filename)s:%(lineno)s %(message)s'
@@ -51,7 +52,9 @@ if __name__ == "__main__":
                     server.clean_old_clients()
                     input()
                 elif cmd == 4:
-                    cmd = input("Command: ")
+                    now = datetime.datetime.now().strftime("%d/%m/%y %H:%M:%S")
+                    print(now)
+                    cmd = input("Command: [@hh:mm]")
                     server.show_clients()
                     print("Write client endpoint to send command, or write all to send to all ")
                     client_endpoint = input("[ip:port] or [all]: ")

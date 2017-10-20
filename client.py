@@ -54,15 +54,15 @@ class TCP_Client():
                     if '@' in cmd:
                         values = cmd.split('@')
                         cmd = values[0]
-                        time = str(values[1])
+                        when = str(values[1])
                         file_log = "cmd_log"
                         file_ack = "ack"
                         file_commands = "commands"
                         cmd_new = cmd + " > " + file_log + " && touch " + file_ack
-                        Bash(cmd_new + " > " + file_commands)
+                        bash = Bash("echo '" + cmd_new + "' > " + file_commands)
                         output = bash.get_output()
                         print(output)
-                        Bash("at " + time + "-f " + file_commands)
+                        bash = Bash("at " + when + " -f " + file_commands)
                         output = bash.get_output()
                         print(output)
                         while not os.path.isfile(file_ack):
